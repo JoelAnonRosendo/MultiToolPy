@@ -8,6 +8,8 @@ author = "Joel Añón"
 import os
 import json
 from datetime import datetime
+import random
+import string
 
 FECHA_ACTUAL = datetime.now()
 FORMATO = FECHA_ACTUAL.strftime("%Y-%m-%d-%H-%M")
@@ -47,6 +49,8 @@ def mostrar_opcion(res):
         numeros_primos()
     elif respuesta == "3":
         generador_de_correos()
+    elif respuesta == "4":
+        generador_de_contraseñas()
 
 def calculadora():
 
@@ -479,6 +483,8 @@ def generador_de_correos():
             copia_de_seguridad_correos(history)
         elif respuesta == "6":
             history = restauracion_copias_correos(history)
+        elif respuesta == "-h" or respuesta == "help":
+            help_correos()
         return dominio, history, contador_history
     
     def crear_correo(nombre_dominio, nombre_usuario, historial, contador_historial):
@@ -568,11 +574,68 @@ def generador_de_correos():
 
     def copia_de_seguridad_correos(historial):
         history = historial
+        ruta = None
+        ruta = os.path.join("C:/Users/J.anon/Downloads/python/copias/correos/historial",f"historial-{FORMATO}.txt")
+        os.makedirs(os.path.dirname(ruta), exist_ok=True)
+        with open (ruta, "w") as archivo:
+            json.dump(history, archivo, indent=4)
+        print("La copia de seguridad se ha realizado con exito.")
 
     def restauracion_copias_correos(historial):
         history = historial
+        posicion = 1
+        contador = 0
+        contenido_restaurar = None
+        ruta = "C:/Users/J.anon/Downloads/python/copias/correos/historial"
+        contenido = os.listdir(ruta)
+        for elemento in contenido:
+            print(f"\n|   {posicion}.- {elemento} \t\t\t |")
+            posicion = posicion + 1
+        respuesta = int(input("Cual quieres restaurar: "))
+        for x in contenido:
+            contador += 1  
+            if contador == respuesta:  
+                contenido_restaurar = x 
+        ruta = f"C:/Users/J.anon/Downloads/python/copias/correos/historial/{contenido_restaurar}"
+
+        with open (ruta, "r") as archivo:
+            history = json.load(archivo)
         return history
     
+    def help_correos():
+        clear()
+        print()
+        print("|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|")
+        print("|                                 Guia de ayuda                               |")
+        print("|_____________________________________________________________________________|")
+        print("|                                                                             |")
+        print("|   help  or  -h   -->    Muestra una guia de ayuda para el usuario           |")
+        print("|                         facilitando el uso del programa.                    |")
+        print("|                                                                             |")
+        print("|   1.Crear        -->    Crea correos a partir de la primera letra           |")
+        print("|     correos             del nombre a continuacion un \".\" y luego          |")
+        print("|                         el aellido @ el dominio.                            |")
+        print("|                                                                             |")
+        print("|   2.Cambiar      -->    Le pregunta al usuario por que dominio quiere       |")
+        print("|     el dominio          cambiarlo como por ejemplo gmail.com.               |")
+        print("|                                                                             |")
+        print("|   3.Mostrar      -->    Muestra un historial de todos los correos           |")
+        print("|     historial           creados por el usuario.                             |")
+        print("|                                                                             |")
+        print("|   4.Eliminar     -->    Muestra al usuario todos los correos creados        |")
+        print("|     correos             enumerados para que el usuario decida cual          |")
+        print("|                         quiere eliminar, pero tambien tiene una opcion      |")
+        print("|                         de eliminarlo todo de una sentada.                  |")
+        print("|                                                                             |")
+        print("|   5.Copias       -->    Crea una copia de seguridad de todos los            |")
+        print("|     de seguridad        correos creados por el usuario.                     |")
+        print("|                                                                             |")
+        print("|   6.Restauracion -->    Se le muestra al usuario todas las copias de        |")
+        print("|                         seguridad para que eliga cual quiere restaurar.     |")
+        print("|_____________________________________________________________________________|")
+        print()
+        clear()
+
     respuesta_menu = None
     nombre = None
     history = {}
@@ -586,6 +649,75 @@ def generador_de_correos():
         menu_generador_de_correos()
         respuesta_menu = preguntar_opcion_menu_correos()
         dominio, history, contador_history = mostrar_opcion_correos(respuesta_menu, dominio, nombre, history, contador_history)
+
+def generador_de_contraseñas():
+    # Inicio contraseñas
+    def menu_contraseñas():
+        print("-----------------------------------------------------------------------")
+        print("\t1.-  Generar contraseña automaticamente.")
+        print("\t2.-  Generar contraseña definiendo la cantidad de caracteres.")
+        print("\t0.-  Adios.")
+        print("\thelp or -h  .- Muestra un listado de ayuda")
+        print("-----------------------------------------------------------------------")
+
+    def preguntar_opcion_menu_contraseñas():
+        respuesta = None
+        respuesta = input("Que opcion escoges? ")
+        return respuesta
+
+    def mostrar_opcion_menu_contraseñas(respuesta):
+        respuesta_menu =respuesta
+
+        if respuesta_menu == "1":
+            contraseña_automatica()
+        elif respuesta_menu == "2":
+            contraseña_definir()
+        elif respuesta_menu == "-h" or respuesta_menu == "help":
+            help_contraseñas()
+
+    def contraseña_automatica():
+        caracteres = 10
+        combinacion = string.ascii_letters + string.digits
+        contraseña = ''.join(random.choice(combinacion) for _ in range(caracteres))
+        print(contraseña)
+
+    def contraseña_definir():
+        caracteres = None
+        combinacion = string.ascii_letters + string.digits
+        caracteres = int(input("De cuantos caracteres quieres que sea la contraseña: "))
+        contraseña = ''.join(random.choice(combinacion) for _ in range(caracteres))
+        print(contraseña)
+
+    # Falta acabar
+    def help_contraseñas():
+        clear()
+        print()
+        print("|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|")
+        print("|                                 Guia de ayuda                               |")
+        print("|_____________________________________________________________________________|")
+        print("|                                                                             |")
+        print("|   help  or  -h   -->    Muestra una guia de ayuda para el usuario           |")
+        print("|                         facilitando el uso del programa.                    |")
+        print("|                                                                             |")
+        print("|   1.Generar      -->    Genera automaticamente una contraseña de            |")
+        print("|     contraseñas         10 caracteres.                                      |")
+        print("|     automaticas                                                             |")
+        print("|                                                                             |")
+        print("|   2.Generar      -->    Genera automaticamente una contraseña de            |")
+        print("|     contraseñas         la cantidad de caracteres especificados             |")
+        print("|     caracteres          por el usuario.                                     |")
+        print("|_____________________________________________________________________________|")
+        print()
+        clear()
+
+    respuesta_menu = None
+    while respuesta_menu != "0":
+        clear()
+        menu_contraseñas()
+        respuesta_menu = preguntar_opcion_menu_contraseñas()
+        mostrar_opcion_menu_contraseñas(respuesta_menu)
+    # Fin contraseñas
+
 
 def main():
     
