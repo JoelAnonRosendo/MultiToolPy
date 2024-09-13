@@ -1,0 +1,1 @@
+{"historial": {" Historial_1": "[2, 2] = 4"}, "lista": [4, 2, 2]}
