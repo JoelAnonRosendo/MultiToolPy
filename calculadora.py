@@ -1,8 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf -8 -*-
 
-#
-
 author = "Joel Añón"
 
 import os
@@ -10,9 +8,11 @@ import json
 from datetime import datetime
 import random
 import string
+import requests # type: ignore
 
 FECHA_ACTUAL = datetime.now()
 FORMATO = FECHA_ACTUAL.strftime("%Y-%m-%d-%H-%M")
+API_KEY = '03461bb35e9c5fccbb7f7db5'
 
 def clear():
     input("Presione enter para continuar.")
@@ -21,14 +21,15 @@ def clear():
     else:
         os.system("clear")
 
+
 def menu():
     print("-----------------------------------------------------------------------")
     print("\t1.-  Calculadora")
     print("\t2.-  Generador de Números Primos")
     print("\t3.-  Generador de correos")
     print("\t4.-  Generador de contraseñas de seguridad")
-    print("\t5.-  ")
-    print("\t6.-  ")
+    print("\t5.-  Conversiones")
+    print("\t6.-  Save keys")
     print("\t7.-  ")
     print("\t8.-  ")
     print("\t9.-  ")
@@ -37,9 +38,11 @@ def menu():
     print("\thelp or -h  .- Muestra un listado de ayuda")
     print("-----------------------------------------------------------------------")
 
+
 def selecion_menu():
     respuesta = input("Que opcion escoges? ")
     return respuesta
+
 
 def mostrar_opcion(res):
     respuesta = res
@@ -51,6 +54,9 @@ def mostrar_opcion(res):
         generador_de_correos()
     elif respuesta == "4":
         generador_de_contraseñas()
+    elif respuesta == "5":
+        conversiones()
+
 
 def calculadora():
 
@@ -178,15 +184,6 @@ def calculadora():
         
         return lista, history, numero_historial
 
-    """
-        def suma():
-
-        def resta():
-
-        def multiplicar():
-
-        def division():
-    """
 
     def preguntar_operacion():
         print("Que operacion quieres hacer de estas opciones: + - * / % ** ")
@@ -388,7 +385,6 @@ def calculadora():
 
 # Falta por acabar
 def numeros_primos():
-
     def menu_numeros_primos():
         print("-----------------------------------------------------------------------")
     print("\t1.-  Cantidad de numeros primos a imprimir")
@@ -405,11 +401,11 @@ def numeros_primos():
     print("\thelp or -h  .- Muestra un listado de ayuda")
     print("-----------------------------------------------------------------------")
 
+
     def preguntar_opcion_menu_primos(opcion):
         respuesta = opcion
         respuesta = input("Que opcion escoges? ")
         return respuesta
-
 
 
     def preguntar_cantidad(cantidad):
@@ -417,6 +413,7 @@ def numeros_primos():
         respuesta = int(input("Cuantos numeros primos quieres que te muestre: "))
 
         return respuesta
+
 
     def encontrar_numeros_primos(cantidad):
         cantidad_primos = cantidad
@@ -434,6 +431,7 @@ def numeros_primos():
                 primos.append(num)
         print(primos)
 
+
     cantidad_de_numeros_primos = None
     opcion_menu_numeros_primos = None
     while opcion_menu_numeros_primos != "0":
@@ -445,6 +443,7 @@ def numeros_primos():
             print("La cantidad deseada tiene que ser superior a 0.")
             cantidad_de_numeros_primos = preguntar_cantidad(cantidad_de_numeros_primos)
         encontrar_numeros_primos(cantidad_de_numeros_primos)
+
 
 def generador_de_correos():
     def menu_generador_de_correos():
@@ -460,10 +459,12 @@ def generador_de_correos():
         print("\thelp or -h  .- Muestra un listado de ayuda")
         print("-----------------------------------------------------------------------")
 
+
     def preguntar_opcion_menu_correos():
         respuesta = input("Que opcion escoges? ")
         return respuesta
     
+
     def mostrar_opcion_correos(respuesta_opcion, nombre_dominio, nombre_usuario, historial, contador_historial):
         respuesta = respuesta_opcion
         dominio = nombre_dominio
@@ -487,6 +488,7 @@ def generador_de_correos():
             help_correos()
         return dominio, history, contador_history
     
+
     def crear_correo(nombre_dominio, nombre_usuario, historial, contador_historial):
         dominio = nombre_dominio
         nombre = nombre_usuario
@@ -528,6 +530,7 @@ def generador_de_correos():
     
         return history, contador_history
 
+
     def cambiar_dominio(nombre_dominio):
         dominio = nombre_dominio
         respuesta = None
@@ -540,6 +543,7 @@ def generador_de_correos():
         else:
             return dominio
         return dominio
+
 
     def mostrar_historial_correos(historial):
         history = historial
@@ -572,6 +576,7 @@ def generador_de_correos():
             print(f"Se ha eliminado el correo {correo_eliminado}.")
         return history
 
+
     def copia_de_seguridad_correos(historial):
         history = historial
         ruta = None
@@ -580,6 +585,7 @@ def generador_de_correos():
         with open (ruta, "w") as archivo:
             json.dump(history, archivo, indent=4)
         print("La copia de seguridad se ha realizado con exito.")
+
 
     def restauracion_copias_correos(historial):
         history = historial
@@ -602,6 +608,7 @@ def generador_de_correos():
             history = json.load(archivo)
         return history
     
+
     def help_correos():
         clear()
         print()
@@ -636,6 +643,7 @@ def generador_de_correos():
         print()
         clear()
 
+
     respuesta_menu = None
     nombre = None
     history = {}
@@ -650,6 +658,7 @@ def generador_de_correos():
         respuesta_menu = preguntar_opcion_menu_correos()
         dominio, history, contador_history = mostrar_opcion_correos(respuesta_menu, dominio, nombre, history, contador_history)
 
+
 def generador_de_contraseñas():
     # Inicio contraseñas
     def menu_contraseñas():
@@ -660,10 +669,12 @@ def generador_de_contraseñas():
         print("\thelp or -h  .- Muestra un listado de ayuda")
         print("-----------------------------------------------------------------------")
 
+
     def preguntar_opcion_menu_contraseñas():
         respuesta = None
         respuesta = input("Que opcion escoges? ")
         return respuesta
+
 
     def mostrar_opcion_menu_contraseñas(respuesta):
         respuesta_menu =respuesta
@@ -675,11 +686,13 @@ def generador_de_contraseñas():
         elif respuesta_menu == "-h" or respuesta_menu == "help":
             help_contraseñas()
 
+
     def contraseña_automatica():
         caracteres = 10
         combinacion = string.ascii_letters + string.digits
         contraseña = ''.join(random.choice(combinacion) for _ in range(caracteres))
         print(contraseña)
+
 
     def contraseña_definir():
         caracteres = None
@@ -710,6 +723,7 @@ def generador_de_contraseñas():
         print()
         clear()
 
+
     respuesta_menu = None
     while respuesta_menu != "0":
         clear()
@@ -717,6 +731,203 @@ def generador_de_contraseñas():
         respuesta_menu = preguntar_opcion_menu_contraseñas()
         mostrar_opcion_menu_contraseñas(respuesta_menu)
     # Fin contraseñas
+
+
+def conversiones():
+    # Inicio conversiones
+    def menu_conversiones():
+        print("-----------------------------------------------------------------------")
+        print("\t1.-  Combersion.")
+        print("\t2.-  Mostrar historial.")
+        print("\t3.-  Copias de seguridad.")
+        print("\t4.-  Restauracion.")
+        print("\t0.-  Adios.")
+        print("\thelp or -h  .- Muestra un listado de ayuda")
+        print("-----------------------------------------------------------------------")
+    
+
+    def preguntar_opcion_menu_conversiones():
+        respuesta = None
+        respuesta = input("Que opcion escoges? ")
+        return respuesta
+    
+
+    def mostrar_opcion_menu_conversiones(respuesta, historial, numero_historial):
+        respuesta_menu =respuesta
+        numero_history = numero_historial
+        history = historial
+        if respuesta_menu == "1":
+            history, numero_history = hacer_conversiones(history, numero_history)
+        elif respuesta_menu == "2":
+            mostrar_historial(history)
+        elif respuesta_menu == "3":
+            copia_de_seguridad_conversiones(history, numero_history)
+        elif respuesta_menu == "4":
+            history, numero_history = restauracion_conversiones(history, numero_history)
+        return history, numero_history
+
+
+    def hacer_conversiones(historial, numero_historial):
+        respuesta = None
+        respuesta_comvertir = None
+        history = historial
+        numero_history =numero_historial
+        url = f"https://v6.exchangerate-api.com/v6/{API_KEY}/latest/EUR"
+        def mini_menu_conversiones():
+            print("-----------------------------------------------------------------------")
+            print("\t1.-  Longitud")
+            print("\t2.-  Peso")
+            print("\t3.-  Temperatura")
+            print("\t4.-  Moneda")
+            print("-----------------------------------------------------------------------")
+        mini_menu_conversiones()
+        respuesta = int(input("Que opcion: "))
+
+        if respuesta == 1:
+            print("-----------------------------------------------------------------------")
+            print("\t1.-  Comvertir de metros a kilometros.")
+            print("\t2.-  Comvertir de kilometros a metros.")
+            print("-----------------------------------------------------------------------")
+            respuesta_comvertir = int(input(""))
+            if respuesta_comvertir == 1:
+                metros = float(input("Dime los metros que quieres pasar a kilometros: "))
+                kilometros = metros / 1000
+                print(f"los {metros} metros son {kilometros} kilometros.")
+                numero_history += 1
+                history[f"Histrorial numero {numero_history}"] = f"{metros}m = {kilometros}km"
+                print(f"{metros}m = {kilometros}km")
+            elif respuesta_comvertir == 2:
+                kilometros = float(input("Dime los kilometros que quieres pasar a metros: "))
+                metros = kilometros * 1000
+                print(f"los {kilometros} kilometros son {metros} metros.")
+                numero_history += 1
+                history[f"Histrorial numero {numero_history}"] = f"{kilometros}km = {metros}m"
+                print(f"{kilometros}km = {metros}m")
+        elif respuesta ==2:
+            print("-----------------------------------------------------------------------")
+            print("\t1.-  Comvertir de gramos a kilogramos.")
+            print("\t2.-  Comvertir de kilogramos a gramos.")
+            print("-----------------------------------------------------------------------")
+            respuesta_comvertir = int(input(""))
+            if respuesta_comvertir == 1:
+                gramos = float(input("Cuantos gramos quieres pasar a kilogramos? "))
+                kilogramos = gramos / 1000
+                print(f"los {gramos} gramos son {kilogramos} kilogramos.")
+                numero_history += 1
+                history[f"Histrorial numero {numero_history}"] = f"{gramos}g = {kilogramos}kg"
+                print(f"{gramos}g = {kilogramos}kg")
+            elif respuesta_comvertir == 2:
+                kilogramos = float(input("Cuantos kilogramos quieres pasar a gramos? "))
+                gramos = kilogramos * 1000
+                print(f"los {kilogramos} kilogramos son {gramos} gramos.")
+                numero_history += 1
+                history[f"Histrorial numero {numero_history}"] = f"{kilogramos}kg = {gramos}g"
+                print(f"{kilogramos}kg = {gramos}g")
+        elif respuesta == 3:
+            print("-----------------------------------------------------------------------")
+            print("\t1.-  Comvertir de Celsius a Fahrenheit.")
+            print("\t2.-  Comvertir de Fahrenheit a Celsius.")
+            print("-----------------------------------------------------------------------")
+            respuesta_comvertir = int(input(""))
+            if respuesta_comvertir == 1:
+                celsius = float(input("Dime los celsius que quieres pasar a fahrenheit: "))
+                fahrenheit = (celsius * 9/5) + 32
+                print(f"los {celsius} celsius son {fahrenheit} fahrenheit.")
+                numero_history += 1
+                history[f"Histrorial numero {numero_history}"] = f"{celsius}°C = {fahrenheit}°F"
+                print(f"{celsius}°C = {fahrenheit}°F")
+            elif respuesta_comvertir == 2:
+                fahrenheit = float(input(""))
+                celsius = (fahrenheit - 32) * 5/9
+                print(f"los {celsius} celsius son {fahrenheit} fahrenheit.")
+                numero_history += 1
+                history[f"Histrorial numero {numero_history}"] = f"{celsius}°C = {fahrenheit}°F"
+                print(f"{celsius}°C = {fahrenheit}°F")
+        elif respuesta == 4:
+            print("-----------------------------------------------------------------------")
+            print("\t1.-  Comvertir de Euro € a Dolar $.")
+            print("\t2.-  Comvertir de Dolar $ a Euro €.")
+            print("-----------------------------------------------------------------------")
+            respuesta_comvertir = int(input(""))
+            if respuesta_comvertir == 1:
+                url = f"https://v6.exchangerate-api.com/v6/{API_KEY}/latest/EUR"
+                response = requests.get(url)
+                data = response.json()
+                tasa_cambio = data['conversion_rates']['USD']
+                euro = float(input("Cuantos euros quieres pasar a dolares? "))
+                print(f"La tasa de cambio de € a DOLAR = {tasa_cambio}")
+                dolares = euro * tasa_cambio
+                history[f"Histrorial numero {numero_history}"] = f"{euro}€ = {dolares}$"
+                print(f"{euro}€ = {dolares}$")
+            elif respuesta_comvertir == 2:
+                url = f"https://v6.exchangerate-api.com/v6/{API_KEY}/latest/USD"
+                response = requests.get(url)
+                data = response.json()
+                tasa_cambio = data['conversion_rates']['EUR']
+                dolares = float(input("Cuantos euros quieres pasar a dolares? "))
+                print(f"La tasa de cambio de $ a EURO = {tasa_cambio}")
+                euro = dolares * tasa_cambio
+                history[f"Histrorial numero {numero_history}"] = f"{dolares}$ = {euro}€"
+                print(f"{dolares}$ = {euro}€")
+        
+        return history, numero_history
+
+
+    def mostrar_historial(historial):
+        history = historial
+        print(f"----------------------------------------------------")
+        for clave, valor in history.items():
+            valor_str = valor.replace(","," +").replace("[","").replace("]","")
+            print(f"{clave}\n ________________\n\n  {valor_str}")
+            print()
+        print(f"----------------------------------------------------")
+
+
+    def copia_de_seguridad_conversiones(historial, numero_historial):
+        history = historial
+        numero_history = numero_historial
+        ruta = None
+
+        ruta = os.path.join("C:/Users/J.anon/Downloads/python/copias/conversiones/completas",f"completa-{FORMATO}.txt")
+        os.makedirs(os.path.dirname(ruta), exist_ok=True)
+    
+        with open(ruta, "w") as archivo:
+            json.dump({"historial": history, "numero_historial": numero_history}, archivo)
+
+
+    def restauracion_conversiones(historial, numero_historial):
+        history = historial
+        numero_history = numero_historial
+        posicion = 1
+        contador = 0
+        contenido_restaurar = None
+        ruta = "C:/Users/J.anon/Downloads/python/copias/conversiones/completas"
+        contenido = os.listdir(ruta)
+        for elemento in contenido:
+            print(f"\n|   {posicion}.- {elemento} \t\t\t |")
+            posicion = posicion + 1
+        respuesta = int(input("Cual quieres restaurar: "))
+        for x in contenido:
+            contador += 1  
+            if contador == respuesta:  
+                contenido_restaurar = x 
+        ruta = f"C:/Users/J.anon/Downloads/python/copias/conversiones/completas/{contenido_restaurar}"
+        with open(ruta, "r") as archivo:
+            datos_restaurados = json.load(archivo)
+        history = datos_restaurados["historial"]
+        numero_history = datos_restaurados["numero_historial"]
+        return history, numero_history
+
+
+    respuesta_menu = None
+    history = {}
+    numero_history = 0
+    while respuesta_menu != "0":
+        clear()
+        menu_conversiones()
+        respuesta_menu = preguntar_opcion_menu_conversiones()
+        history, numero_history = mostrar_opcion_menu_conversiones(respuesta_menu, history, numero_history)
+    # Fin conversiones
 
 
 def main():
@@ -729,6 +940,7 @@ def main():
         if respuesta_menu != "0":
             mostrar_opcion(respuesta_menu)
     print("Adios")
+
 
 if __name__ == "__main__":
     main()
