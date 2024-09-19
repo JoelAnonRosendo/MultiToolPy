@@ -54,7 +54,6 @@ class MultiToolPy(tk.Tk):
         self.notebook.add(save_keys_frame, text="Save Keys")
         self.save_keys = SaveKeysManager(save_keys_frame)
     
-
 class Calculator:
     def __init__(self, master):
         self.master = master
@@ -83,6 +82,7 @@ class Calculator:
             if col > 3:
                 col = 0
                 fila += 1
+
         self.history_button = tk.Button(self.master, text='Historial', command=self.mostrar_history)
         self.history_button.grid(row=1, column=4, columnspan=4, pady=30)
 
@@ -94,9 +94,6 @@ class Calculator:
 
         self.restore_button = tk.Button(self.master, text='Restaurar', command=self.restauracion_copias_calculadora)
         self.restore_button.grid(row=3, column=4, columnspan=4, pady=10)
-
-
-
 
     def click_boton(self, valor):
         if valor == "=":
