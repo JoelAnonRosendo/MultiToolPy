@@ -1,12 +1,32 @@
-import tkinter as tk
-from tkinter import ttk, simpledialog, messagebox, filedialog
+# Importing necessary libraries
+import sys
+import subprocess
+
+def instalar_paquete(paquete):
+    subprocess.check_call([sys.executable, "-m", "pip", "install", paquete])
+
+paquetes = ["requests", "cryptography", "-r requirements.txt"]
+
+for paquete in paquetes:
+    try:
+        __import__(paquete)
+    except ImportError:
+        instalar_paquete(paquete)
+
+
+
 import os
 import json
 import random
 import string
 import requests
+import tkinter as tk
 from datetime import datetime
+from tkinter import scrolledtext
 from cryptography.fernet import Fernet
+from tkinter import ttk, simpledialog, messagebox, filedialog
+
+
 
 API_KEY = '03461bb35e9c5fccbb7f7db5'
 FECHA_ACTUAL = datetime.now()
@@ -26,8 +46,8 @@ class MultiToolPy(tk.Tk):
         self.create_email_generator_tab()
         self.create_password_generator_tab()
         self.create_conversions_tab()
-        self.create_save_keys_tab()  
-
+        self.create_save_keys_tab() 
+        self.create_chat_ia_tab() 
 
     def create_calculator_tab(self):
         calculator_frame = ttk.Frame(self.notebook)
@@ -54,13 +74,17 @@ class MultiToolPy(tk.Tk):
         self.notebook.add(save_keys_frame, text="Save Keys")
         self.save_keys = SaveKeysManager(save_keys_frame)
     
+    def create_chat_ia_tab(self):
+        chat_frame = ttk.Frame(self.notebook)
+        self.notebook.add(chat_frame, text="Chat con Wit.ai")
+        self.chat_app = WitAIChat(chat_frame)
+
 class Calculator:
     def __init__(self, master):
         self.master = master
         self.history = []
         self.contador_history = 0
         self.create_widgets()
-
 
     def create_widgets(self):
         self.entrada = tk.Entry(self.master, width=16, font=('Arial', 24), borderwidth=2, relief="solid")
@@ -118,7 +142,6 @@ class Calculator:
         else:
             messagebox.showinfo("Historial", "No hay operaciones registradas.")
 
-    
     def copia_de_seguridad_calculadora(self):
         ruta = os.path.join(os.path.expanduser('~'), 'C:/Users/J.anon/Downloads/python/copias/calculadora/historial', f"historial-{FORMATO}.txt")
         os.makedirs(os.path.dirname(ruta), exist_ok=True)
@@ -534,6 +557,88 @@ class SaveKeysManager:
 
         self.retrieve_button = tk.Button(self.master, text="Recuperar Contraseña", command=self.retrieve_password)
         self.retrieve_button.pack(pady=5)
+
+class WitAIChat:
+    def __init__(self, master):
+        self.master = master
+        self.create_widgets()
+
+    def create_widgets(self):
+        self.messages = scrolledtext.ScrolledText(self.master, state='disabled', width=50, height=20, bg='white', fg='black')
+        self.messages.grid(row=0, column=0, padx=10, pady=10)
+
+        self.entry = tk.Entry(self.master, width=40)
+        self.entry.grid(row=1, column=0, padx=10, pady=10)
+        self.entry.bind('<Return>', self.send_message)
+
+        self.send_button = tk.Button(self.master, text='Send', command=self.send_message)
+        self.send_button.grid(row=1, column=1, padx=10, pady=10)
+
+        self.WIT_AI_TOKEN = '5RW5APRAWCEW6B5545H2IQY2FH4MMGXA'
+
+    def send_message(self, event=None):
+        message = self.entry.get()
+        if message.strip() == '':
+            return
+
+        self.messages.config(state='normal')
+        self.messages.insert(tk.END, f'User: {message}\n')
+        self.messages.config(state='disabled')
+
+        # Clear the entry box
+        self.entry.delete(0, tk.END)
+
+        # Get response from Wit.ai
+        self.get_wit_response(message)
+
+    def get_wit_response(self, message):
+        url = f'https://api.wit.ai/message?v=20210320&q={message}'
+        headers = {'Authorization': f'Bearer {self.WIT_AI_TOKEN}'}
+
+        try:
+            response = requests.get(url, headers=headers)
+            response.raise_for_status()
+            wit_response = response.json()
+            self.display_response(wit_response)
+        except requests.exceptions.RequestException as e:
+            self.display_response({'error': str(e)})
+
+    def display_response(self, response):
+        self.messages.config(state='normal')
+        if 'error' in response:
+            self.messages.insert(tk.END, f'Bot: Error fetching response from Wit.ai.\n')
+        else:
+            # self.messages.insert(tk.END, f'Bot: {response}\n')
+            
+            for entity_type, entity_list in response["entities"].items():
+                    for entity in entity_list:
+                        print( f"Entidad: {entity_type}, Valor: {entity['value']}")
+                        nombre = entity['value']
+                        
+            # Recorrer los intents y buscar "create_user"
+            for intent in response['intents']:
+                if intent['name'] == 'create_user':
+                    accion = intent['name']
+                    confidence = intent['confidence']
+                            
+            if accion == "create_user":
+                try:
+                    # Ejecutar el comando en CMD usando subprocess
+                    comando = f"net user {nombre} 1234 /add"
+                    subprocess.run(comando, shell=True, check=True)
+                    self.messages.insert(tk.END, f'Bot: Usuario \'{nombre}\' creado correctamente. \n')
+                except subprocess.CalledProcessError as e:
+                    self.messages.insert(tk.END, f"Ocurrió un error al ejecutar el comando: {e}")
+
+            elif accion == "edit_password_user":
+                try:
+                    None
+                except:
+                    self.messages.insert(tk.END, f"Ocurrió un error al ejecutar el comando: {e}")
+            else:
+                self.messages.insert(tk.END, f"Operación cancelada.")
+                
+        self.messages.config(state='disabled')
 
 if __name__ == "__main__":
     app = MultiToolPy()
