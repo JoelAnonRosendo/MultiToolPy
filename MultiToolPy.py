@@ -1,7 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf -8 -*-
 
+
 author = "Joel Añón"
+
 
 import os
 import json
@@ -9,9 +11,12 @@ from datetime import datetime
 import random
 import string
 import requests # type: ignore
+
+
 FECHA_ACTUAL = datetime.now()
 FORMATO = FECHA_ACTUAL.strftime("%Y-%m-%d-%H-%M")
 API_KEY = '03461bb35e9c5fccbb7f7db5'
+
 
 def clear():
     input("Presione enter para continuar.")

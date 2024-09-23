@@ -2,17 +2,19 @@
 import sys
 import subprocess
 
+
 def instalar_paquete(paquete):
     subprocess.check_call([sys.executable, "-m", "pip", "install", paquete])
 
+
 paquetes = ["requests", "cryptography", "-r requirements.txt"]
+
 
 for paquete in paquetes:
     try:
         __import__(paquete)
     except ImportError:
         instalar_paquete(paquete)
-
 
 
 import os
@@ -27,10 +29,10 @@ from cryptography.fernet import Fernet
 from tkinter import ttk, simpledialog, messagebox, filedialog
 
 
-
 API_KEY = '03461bb35e9c5fccbb7f7db5'
 FECHA_ACTUAL = datetime.now()
 FORMATO = FECHA_ACTUAL.strftime("%Y-%m-%d-%H-%M")
+
 
 class MultiToolPy(tk.Tk):
     def __init__(self):
@@ -78,6 +80,7 @@ class MultiToolPy(tk.Tk):
         chat_frame = ttk.Frame(self.notebook)
         self.notebook.add(chat_frame, text="Chat con Wit.ai")
         self.chat_app = WitAIChat(chat_frame)
+
 
 class Calculator:
     def __init__(self, master):
@@ -206,6 +209,7 @@ class Calculator:
         )
         messagebox.showinfo("Ayuda", text)
 
+
 class EmailGenerator:
     def __init__(self, master):
         self.master = master
@@ -296,6 +300,7 @@ class EmailGenerator:
                 self.contador_history = len(self.history)
             messagebox.showinfo("Restauración", "Restauración completada con éxito.")
 
+
 class GeneradorDeContraseñas:
     def __init__(self, master):
         self.master = master
@@ -355,6 +360,7 @@ class GeneradorDeContraseñas:
                      "|     por el usuario.                                     |" 
                      "|_____________________________________________________________________________|")
         messagebox.showinfo("Ayuda", help_text)
+
 
 class ConversionApp:
     def __init__(self, master):
@@ -481,6 +487,7 @@ class ConversionApp:
                 self.contador_history = len(self.history)
             messagebox.showinfo("Restauración", "Restauración completada con éxito.")
 
+
 class SaveKeysManager:
     def __init__(self, master):
         self.master = master
@@ -557,6 +564,7 @@ class SaveKeysManager:
 
         self.retrieve_button = tk.Button(self.master, text="Recuperar Contraseña", command=self.retrieve_password)
         self.retrieve_button.pack(pady=5)
+
 
 class WitAIChat:
     def __init__(self, master):
@@ -639,6 +647,7 @@ class WitAIChat:
                 self.messages.insert(tk.END, f"Operación cancelada.")
                 
         self.messages.config(state='disabled')
+
 
 if __name__ == "__main__":
     app = MultiToolPy()
