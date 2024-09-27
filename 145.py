@@ -30,6 +30,7 @@ class MultiToolPy(tk.Tk):
         self.create_conversions_tab()
         self.create_save_keys_tab() 
         self.create_chat_ia_tab() 
+        self.create_videogame_tab()
 
     def create_calculator_tab(self):
         calculator_frame = ttk.Frame(self.notebook)
@@ -60,6 +61,7 @@ class MultiToolPy(tk.Tk):
         chat_frame = ttk.Frame(self.notebook)
         self.notebook.add(chat_frame, text="Chat con Wit.ai")
         self.chat_app = WitAIChat(chat_frame)
+    def create_videogame_tab(self)  
 
 class Calculator:
     def __init__(self, master):
@@ -606,6 +608,14 @@ class WitAIChat:
                 self.messages.insert(tk.END, f'Bot: Se ha creado el usuario {nombre} \n')
                 
         self.messages.config(state='disabled')
+
+class vidiogame:
+    def __init__(self, master):
+        self.master = master
+        self.create_widgets()
+
+    def create_widgets():
+        None
 
 if __name__ == "__main__":
     app = MultiToolPy()

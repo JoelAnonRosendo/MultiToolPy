@@ -1,20 +1,23 @@
 # Importing necessary libraries
-import sys
+# import sys
 import subprocess
 
 
-def instalar_paquete(paquete):
-    subprocess.check_call([sys.executable, "-m", "pip", "install", paquete])
+# # List of packages to install
+# packages = ["requests", "cryptography"]
 
+# # Function to install packages
+# def install(package):
+#     subprocess.check_call([sys.executable, "-m", "pip", "install", package])
 
-paquetes = ["requests", "cryptography", "-r requirements.txt"]
+# # Install each package in the list
+# for package in packages:
+#     install(package)
 
+# # Install from requirements.txt
+# install('-r requirements.txt')
 
-for paquete in paquetes:
-    try:
-        __import__(paquete)
-    except ImportError:
-        instalar_paquete(paquete)
+# print("All dependencies installed successfully.")
 
 
 import os
