@@ -1,23 +1,23 @@
 # Importing necessary libraries
-# import sys
+import sys
 import subprocess
 
 
-# # List of packages to install
-# packages = ["requests", "cryptography"]
+# List of packages to install
+packages = ["requests", "cryptography"]
 
-# # Function to install packages
-# def install(package):
-#     subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+# Function to install packages
+def install(package):
+    subprocess.check_call([sys.executable, "-m", "pip", "install", package])
 
-# # Install each package in the list
-# for package in packages:
-#     install(package)
+# Install each package in the list
+for package in packages:
+    install(package)
 
 # # Install from requirements.txt
 # install('-r requirements.txt')
 
-# print("All dependencies installed successfully.")
+print("All dependencies installed successfully.")
 
 
 import os
