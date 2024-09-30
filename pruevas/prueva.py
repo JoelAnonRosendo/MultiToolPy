@@ -23,8 +23,9 @@ class UserCreationApp:
         accion = "create_user"
 
         if accion == "create_user":
-            try:
-                # Ejecutar el comando en CMD usando subprocess
-                comando = f"net user {nombre} 1234 /add"
-                subprocess.run(comando, shell=True, check=True)
-                self.messages.insert(tk.END, f'Bot: Usuario
+            # Ejecutar el comando en CMD usando subprocess
+            command = f'powershell Start-Process cmd -ArgumentList "/c net user {nombre} 123 /add" -Verb RunAs'
+
+            # Ejecuta el comando
+            subprocess.run(command, shell=True, check=True)
+                
