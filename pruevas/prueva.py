@@ -1,31 +1,20 @@
-import tkinter as tk
+import os
 import subprocess
 
-class UserCreationApp:
-    def __init__(self, master):
-        self.master = master
-        self.master.title("User Creation")
+# Ruta para guardar temporalmente el archivo batch
+batch_file_path = "temp_admin_command.bat"
 
-        self.label = tk.Label(master, text="Nombre de usuario:")
-        self.label.pack()
+# Contenido del archivo batch (comando para agregar el usuario)
+with open(batch_file_path, 'w') as batch_file:
+    batch_file.write('net user player 123 /add\n')
 
-        self.username_entry = tk.Entry(master)
-        self.username_entry.pack()
+# Comando para ejecutar el archivo batch con permisos de administrador
+command = f'powershell -Command "Start-Process cmd -ArgumentList \'/c {batch_file_path}\' -Verb RunAs"'
 
-        self.create_button = tk.Button(master, text="Crear Usuario", command=self.create_user)
-        self.create_button.pack()
+# Ejecutar el comando
+subprocess.run(command, shell=True)
 
-        self.messages = tk.Text(master, height=10, width=50)
-        self.messages.pack()
-
-    def create_user(self):
-        nombre = self.username_entry.get()
-        accion = "create_user"
-
-        if accion == "create_user":
-            # Ejecutar el comando en CMD usando subprocess
-            command = f'powershell Start-Process cmd -ArgumentList "/c net user {nombre} 123 /add" -Verb RunAs'
-
-            # Ejecuta el comando
-            subprocess.run(command, shell=True, check=True)
+# Eliminar el archivo batch después de su ejecución (opcional)
+if os.path.exists(batch_file_path):
+    os.remove(batch_file_path)
                 
