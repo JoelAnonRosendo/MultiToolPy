@@ -619,7 +619,7 @@ class WitAIChat:
         if 'error' in response:
             self.messages.insert(tk.END, f'Bot: Error fetching response from Wit.ai.\n')
         else:
-            # self.messages.insert(tk.END, f'Bot: {response}\n')
+            self.messages.insert(tk.END, f'Bot: {response}\n')
             
             for entity_type, entity_list in response["entities"].items():
                     for entity in entity_list:
@@ -635,17 +635,27 @@ class WitAIChat:
             if accion == "create_user":
                 try:
                     # Ejecutar el comando en CMD usando subprocess
-                    comando = f"net user {nombre} 1234 /add"
-                    subprocess.run(comando, shell=True, check=True)
+                    comando = f"Start-Process powershell -Verb runAs -ArgumentList 'net user {nombre} 123 /add'"
+                    # Ejecutar el comando en PowerShell
+                    subprocess.run(["powershell", "-Command", comando])
                     self.messages.insert(tk.END, f'Bot: Usuario \'{nombre}\' creado correctamente. \n')
                 except subprocess.CalledProcessError as e:
                     self.messages.insert(tk.END, f"Ocurrió un error al ejecutar el comando: {e}")
 
-            elif accion == "edit_password_user":
-                try:
-                    None
-                except:
-                    self.messages.insert(tk.END, f"Ocurrió un error al ejecutar el comando: {e}")
+            # elif accion == "view_all_users":
+            #     try:
+            #         self.messages.insert(tk.END, f'Bot: Lista usuarios dentro del equipo:\n')
+            #         resultado = subprocess.run(["net", "user"], capture_output=True, text=True)
+
+            #         # Verifica si el comando se ejecutó correctamente
+            #         if resultado.returncode == 0:
+            #             # Divide la salida en líneas y recorre con un bucle for
+            #             for linea in resultado.stdout.splitlines():
+            #                 self.messages.insert(tk.END, f'{linea}\n')
+            #         else:
+            #             print("Error al ejecutar el comando 'net user'")
+            #     except:
+            #         self.messages.insert(tk.END, f"Ocurrió un error al ejecutar el comando: {e}")
             else:
                 self.messages.insert(tk.END, f"Operación cancelada.")
                 

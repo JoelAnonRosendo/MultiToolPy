@@ -1,20 +1,19 @@
-import os
 import subprocess
 
-# Ruta para guardar temporalmente el archivo batch
-batch_file_path = "temp_admin_command.bat"
+def listar_usuarios():
+    try:
+        # Ejecuta el comando 'net user' y captura la salida
+        resultado = subprocess.run(["net", "user"], capture_output=True, text=True)
 
-# Contenido del archivo batch (comando para agregar el usuario)
-with open(batch_file_path, 'w') as batch_file:
-    batch_file.write('net user player 123 /add\n')
+        # Verifica si el comando se ejecutó correctamente
+        if resultado.returncode == 0:
+            # Divide la salida en líneas y recorre con un bucle for
+            for linea in resultado.stdout.splitlines():
+                print(linea)
+        else:
+            print("Error al ejecutar el comando 'net user'")
+    except Exception as e:
+        print(f"Ocurrió un error: {e}")
 
-# Comando para ejecutar el archivo batch con permisos de administrador
-command = f'powershell -Command "Start-Process cmd -ArgumentList \'/c {batch_file_path}\' -Verb RunAs"'
-
-# Ejecutar el comando
-subprocess.run(command, shell=True)
-
-# Eliminar el archivo batch después de su ejecución (opcional)
-if os.path.exists(batch_file_path):
-    os.remove(batch_file_path)
-                
+# Llamada a la función
+listar_usuarios()
