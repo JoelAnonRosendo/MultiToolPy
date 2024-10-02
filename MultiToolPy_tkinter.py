@@ -619,18 +619,31 @@ class WitAIChat:
         if 'error' in response:
             self.messages.insert(tk.END, f'Bot: Error fetching response from Wit.ai.\n')
         else:
+            # Mensaje de json muestra todo el contenido
             self.messages.insert(tk.END, f'Bot: {response}\n')
             
             for entity_type, entity_list in response["entities"].items():
                     for entity in entity_list:
                         print( f"Entidad: {entity_type}, Valor: {entity['value']}")
                         nombre = entity['value']
-                        
             # Recorrer los intents y buscar "create_user"
             for intent in response['intents']:
                 if intent['name'] == 'create_user':
                     accion = intent['name']
                     confidence = intent['confidence']
+                elif intent['name'] == 'view_all_users':
+                    accion = intent['name']
+                    confidence = intent['confidence']
+                elif intent['name'] == 'edit_password_user':
+                    accion = intent['name']
+                    entities = response['entities']['wit$message_body:message_body']
+                    nombre = entities[0]['value']  # El primer valor en message_body es el nombre
+                    contrasenya = entities[1]['value']  # El segundo valor en message_body es la contraseña
+                    confidence = intent['confidence']
+                elif intent['name'] == 'delete_user':
+                    accion = intent['name']
+                    confidence = intent['confidence']
+            print(accion)
                             
             if accion == "create_user":
                 try:
@@ -642,20 +655,41 @@ class WitAIChat:
                 except subprocess.CalledProcessError as e:
                     self.messages.insert(tk.END, f"Ocurrió un error al ejecutar el comando: {e}")
 
-            # elif accion == "view_all_users":
-            #     try:
-            #         self.messages.insert(tk.END, f'Bot: Lista usuarios dentro del equipo:\n')
-            #         resultado = subprocess.run(["net", "user"], capture_output=True, text=True)
+            elif accion == "view_all_users":
+                try:
+                    self.messages.insert(tk.END, f'Bot: Lista usuarios dentro del equipo:\n')
+                    resultado = subprocess.run(["net", "user"], capture_output=True, text=True)
 
-            #         # Verifica si el comando se ejecutó correctamente
-            #         if resultado.returncode == 0:
-            #             # Divide la salida en líneas y recorre con un bucle for
-            #             for linea in resultado.stdout.splitlines():
-            #                 self.messages.insert(tk.END, f'{linea}\n')
-            #         else:
-            #             print("Error al ejecutar el comando 'net user'")
-            #     except:
-            #         self.messages.insert(tk.END, f"Ocurrió un error al ejecutar el comando: {e}")
+                    # Verifica si el comando se ejecutó correctamente
+                    if resultado.returncode == 0:
+                        # Divide la salida en líneas y recorre con un bucle for
+                        for linea in resultado.stdout.splitlines():
+                            self.messages.insert(tk.END, f'{linea}\n')
+                    else:
+                        print("Error al ejecutar el comando 'net user'")
+                except:
+                    self.messages.insert(tk.END, f"Ocurrió un error al ejecutar el comando: {e}")
+            
+            elif accion == "edit_password_user":
+                try:
+                    # Ejecutar el comando en CMD usando subprocess
+                    comando = f"Start-Process powershell -Verb runAs -ArgumentList 'net user {nombre} {contrasenya}'"
+                    # Ejecutar el comando en PowerShell
+                    subprocess.run(["powershell", "-Command", comando])
+                    self.messages.insert(tk.END, f'Bot: Usuario \'{nombre}\' se a cambiado la contraseña correctamente. \n')
+                except subprocess.CalledProcessError as e:
+                    self.messages.insert(tk.END, f"Ocurrió un error al ejecutar el comando: {e}")
+
+            elif accion == "delete_user":
+                try:
+                    # Ejecutar el comando en CMD usando subprocess
+                    comando = f"Start-Process powershell -Verb runAs -ArgumentList 'net user {nombre} /delete'"
+                    # Ejecutar el comando en PowerShell
+                    subprocess.run(["powershell", "-Command", comando])
+                    self.messages.insert(tk.END, f'Bot: Usuario \'{nombre}\' se a cambiado la contraseña correctamente. \n')
+                except subprocess.CalledProcessError as e:
+                    self.messages.insert(tk.END, f"Ocurrió un error al ejecutar el comando: {e}")
+
             else:
                 self.messages.insert(tk.END, f"Operación cancelada.")
                 
