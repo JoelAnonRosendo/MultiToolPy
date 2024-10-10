@@ -6,13 +6,16 @@ import subprocess
 # List of packages to install
 packages = ["requests", "cryptography"]
 
+
 # Function to install packages
 def install(package):
     subprocess.check_call([sys.executable, "-m", "pip", "install", package])
 
+
 # Install each package in the list
 for package in packages:
     install(package)
+
 
 # # Install from requirements.txt
 # install('-r requirements.txt')
@@ -42,7 +45,7 @@ class MultiToolPy(tk.Tk):
         super().__init__()
 
         self.title("MultiToolPy")
-        self.geometry("600x400")
+        self.geometry("790x450")
 
         self.notebook = ttk.Notebook(self)
         self.notebook.pack(expand=True, fill="both")
@@ -575,7 +578,7 @@ class WitAIChat:
         self.create_widgets()
 
     def create_widgets(self):
-        self.messages = scrolledtext.ScrolledText(self.master, state='disabled', width=50, height=20, bg='white', fg='black')
+        self.messages = scrolledtext.ScrolledText(self.master, state='disabled', width=70, height=20, bg='white', fg='black')
         self.messages.grid(row=0, column=0, padx=10, pady=10)
 
         self.entry = tk.Entry(self.master, width=40)
@@ -584,6 +587,10 @@ class WitAIChat:
 
         self.send_button = tk.Button(self.master, text='Send', command=self.send_message)
         self.send_button.grid(row=1, column=1, padx=10, pady=10)
+
+        self.send_button_view = tk.Button(self.master, text='visualizar usuarios', command=self.view_users)
+        self.send_button_view.grid(row=1, column=2, padx=10, pady=10)
+
 
         self.WIT_AI_TOKEN = '5RW5APRAWCEW6B5545H2IQY2FH4MMGXA'
 
@@ -620,29 +627,42 @@ class WitAIChat:
             self.messages.insert(tk.END, f'Bot: Error fetching response from Wit.ai.\n')
         else:
             # Mensaje de json muestra todo el contenido
-            self.messages.insert(tk.END, f'Bot: {response}\n')
+            #self.messages.insert(tk.END, f'Bot: {response}\n')
             
             for entity_type, entity_list in response["entities"].items():
                     for entity in entity_list:
                         print( f"Entidad: {entity_type}, Valor: {entity['value']}")
                         nombre = entity['value']
             # Recorrer los intents y buscar "create_user"
+
             for intent in response['intents']:
                 if intent['name'] == 'create_user':
                     accion = intent['name']
                     confidence = intent['confidence']
+
                 elif intent['name'] == 'view_all_users':
                     accion = intent['name']
                     confidence = intent['confidence']
+
                 elif intent['name'] == 'edit_password_user':
                     accion = intent['name']
                     entities = response['entities']['wit$message_body:message_body']
                     nombre = entities[0]['value']  # El primer valor en message_body es el nombre
                     contrasenya = entities[1]['value']  # El segundo valor en message_body es la contraseña
                     confidence = intent['confidence']
+                    
                 elif intent['name'] == 'delete_user':
                     accion = intent['name']
                     confidence = intent['confidence']
+
+                elif intent['name'] == 'create_group':
+                    accion = intent['name']
+                    confidence = intent['confidence']
+                    
+                elif intent['name'] == 'edit_admin_user':
+                    accion = intent['name']
+                    confidence = intent['confidence']
+            # Test
             print(accion)
                             
             if accion == "create_user":
@@ -665,8 +685,6 @@ class WitAIChat:
                         # Divide la salida en líneas y recorre con un bucle for
                         for linea in resultado.stdout.splitlines():
                             self.messages.insert(tk.END, f'{linea}\n')
-                    else:
-                        print("Error al ejecutar el comando 'net user'")
                 except:
                     self.messages.insert(tk.END, f"Ocurrió un error al ejecutar el comando: {e}")
             
@@ -686,15 +704,85 @@ class WitAIChat:
                     comando = f"Start-Process powershell -Verb runAs -ArgumentList 'net user {nombre} /delete'"
                     # Ejecutar el comando en PowerShell
                     subprocess.run(["powershell", "-Command", comando])
-                    self.messages.insert(tk.END, f'Bot: Usuario \'{nombre}\' se a cambiado la contraseña correctamente. \n')
+                    self.messages.insert(tk.END, f'Bot: Usuario \'{nombre}\' se a eliminado correctamente. \n')
                 except subprocess.CalledProcessError as e:
                     self.messages.insert(tk.END, f"Ocurrió un error al ejecutar el comando: {e}")
 
+            elif accion == "create_group":
+                try:
+                    # Ejecutar el comando en CMD usando subprocess
+                    comando = f"Start-Process powershell -Verb runAs -ArgumentList 'net localgroup {nombre} /add'"
+                    # Ejecutar el comando en PowerShell
+                    subprocess.run(["powershell", "-Command", comando])
+                    self.messages.insert(tk.END, f'Bot: grupo \'{nombre}\' se a creado correctamente. \n')
+                except subprocess.CalledProcessError as e:
+                    self.messages.insert(tk.END, f"Ocurrió un error al ejecutar el comando: {e}")
+            
+            elif accion == "edit_admin_user":
+                try:
+                    # Ejecutar el comando en CMD usando subprocess
+                    comando = f"Start-Process powershell -Verb runAs -ArgumentList 'net localgroup Administradores {nombre} /add'"
+                    # Ejecutar el comando en PowerShell
+                    subprocess.run(["powershell", "-Command", comando])
+                    self.messages.insert(tk.END, f'Bot: Usuario \'{nombre}\' se a cambiado la los pribilegios correctamente. \n')
+                except subprocess.CalledProcessError as e:
+                    self.messages.insert(tk.END, f"Ocurrió un error al ejecutar el comando: {e}")
+            
             else:
                 self.messages.insert(tk.END, f"Operación cancelada.")
                 
         self.messages.config(state='disabled')
 
+    def view_users(self,):
+        def get_user_info(username):
+            try:
+                result = subprocess.run(['net', 'user', username], capture_output=True, text=True, check=True)
+                return result.stdout
+            except subprocess.CalledProcessError as e:
+                return f"Error: {e.stderr}"
+            except Exception as e:
+                return f"Un error inesperado ocurrió: {str(e)}"
+
+        def show_user_info():
+            username = username_entry.get()
+            if not username:
+                messagebox.showerror("Error", "Por favor, introduce un nombre de usuario.")
+                return
+            
+            info = get_user_info(username)
+            
+            # Limpia el contenido actual del área de texto
+            info_text.delete('1.0', tk.END)
+            
+            # Inserta la nueva información
+            info_text.insert(tk.END, info)
+
+        # Crear la ventana principal
+        root = tk.Tk()
+        root.title("Información de Usuario de Windows")
+        root.geometry("650x450")
+
+        # Crear y colocar los widgets
+        frame = ttk.Frame(root, padding="10")
+        frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+
+        username_label = ttk.Label(frame, text="Nombre de usuario:")
+        username_label.grid(row=0, column=0, sticky=tk.W, pady=5)
+
+        username_entry = ttk.Entry(frame, width=30)
+        username_entry.grid(row=0, column=1, sticky=tk.W, pady=5)
+
+        search_button = ttk.Button(frame, text="Buscar", command=show_user_info)
+        search_button.grid(row=0, column=2, sticky=tk.W, pady=5, padx=5)
+
+        info_text = tk.Text(frame, wrap=tk.WORD, width=70, height=20)
+        info_text.grid(row=1, column=0, columnspan=3, sticky=(tk.W, tk.E, tk.N, tk.S))
+
+        # Configurar el grid para que se expanda correctamente
+        root.columnconfigure(0, weight=1)
+        root.rowconfigure(0, weight=1)
+        frame.columnconfigure(1, weight=1)
+        frame.rowconfigure(1, weight=1)
 
 if __name__ == "__main__":
     app = MultiToolPy()
