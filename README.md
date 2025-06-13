@@ -1,14 +1,3 @@
-﻿# MultiToolPy
-
-instalar "requests" y "cryptography"
-
-    pip install requests
-
-    pip install cryptography
-
-    pip install psutil
-
-
 # MultiToolPy: Navaja Suiza Digital
 
 Este proyecto (`multi_tool_py.py`) es una aplicación de escritorio con interfaz gráfica (GUI) construida con Tkinter. Ofrece un conjunto de herramientas útiles empaquetadas en una sola aplicación para sistemas Windows.
@@ -61,6 +50,9 @@ python -m pip install requests
 ```
 ```bash
 python -m pip install cryptography
+```
+```bash
+python -m pip install psutil
 ```
 
 Si planeas compilar el script a un archivo .exe, también necesitarás pyinstaller
