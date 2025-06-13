@@ -60,6 +60,24 @@ Si planeas compilar el script a un archivo .exe, también necesitarás pyinstall
 ```bash
 python -m pip install pyinstaller
 ```
+---
+## ⚙️ Generar el Archivo Ejecutable (`.exe`)
+
+Una vez que tengas Python, las dependencias (incluyendo `pyinstaller`) instaladas, y hayas modificado el script `player.py` a tu gusto (especialmente la variable `PROGRAMAS_DIR` si es necesario y te has asegurado de tener los instaladores reales), puedes generar un archivo `.exe` independiente.
+
+Abre una terminal (CMD o PowerShell) en el directorio donde se encuentra tu archivo `player.py` y ejecuta el siguiente comando:
+
+```bash
+pyinstaller --onefile --windowed --hidden-import=requests player.py
+```
+Explicación del comando:
+*   `pyinstaller`: Es la herramienta que empaqueta tu script.
+*   `--onefile`: Crea un único archivo ejecutable `.exe` en lugar de una carpeta con múltiples archivos.
+*   `--windowed`: Indica que es una aplicación con interfaz gráfica (GUI) y no debe abrirse una ventana de consola al ejecutar el `.exe`.
+*   `--hidden-import=requests`: Asegura que la biblioteca `requests` (y cualquier otra que `PyInstaller` pueda no detectar automáticamente) se incluya correctamente en el ejecutable. Si usas otras bibliotecas que `PyInstaller` podría omitir, puedes añadirlas aquí de forma similar (ej. `--hidden-import=otralib`).
+*   `player.py`: Es el nombre de tu script principal.
+
+Después de que el comando se complete, encontrarás el archivo `player.exe` (o el nombre que `PyInstaller` le asigne por defecto si no lo especificas con `--name`) dentro de una subcarpeta llamada `dist` en el mismo directorio. Este archivo `.exe` ya no requiere Python ni las dependencias para ejecutarse en otras máquinas Windows.
 
 ---
 ## 🔑 Configuración de API Keys (Obligatorio para Conversor de Moneda y Chat Wit.ai)
